@@ -130,7 +130,7 @@ def main():
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        print('Writing DESeq2 summary results to {outdir}')
+        print(f'Writing DESeq2 summary results to {outdir}')
 
         command = f'python3 {rsap_folder}/summarising_deseq_results.py --metadata_file {metadata_file} --deseq_file {deseq_file} --log2_norm_ex_file {expression_file} --outdir {outdir}'
         os.system(command)

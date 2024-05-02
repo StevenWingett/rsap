@@ -8,6 +8,7 @@ library("vsn")
 library("RColorBrewer")
 library("pheatmap")
 library("ggplot2")
+library("apeglm")
 
 rm(list=ls())
 
@@ -127,7 +128,7 @@ res <- results(dds, name=comparison)
 res
 
 #library("apeglm")
-resLFC <- lfcShrink(dds, coef=comparison, type="normal")   # Shrunk l2fc
+resLFC <- lfcShrink(dds, coef=comparison, type="apeglm")   # Shrunk l2fc
 resLFC
 
 
@@ -146,7 +147,7 @@ if(identical(to_check_res, to_check_LFC)){
   stop()
 }
 
-# Combine oringal and shrum results togehter
+# Combine oringal and shruk results togehter
 combined_results <- cbind(res, resLFC$log2FoldChange)
 combined_results <- cbind(combined_results, resLFC$lfcSE)
 combined_results$region <- rownames(combined_results)
