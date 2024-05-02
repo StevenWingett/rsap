@@ -30,7 +30,11 @@ def read_options():
     #Arguments and options
     parser = argparse.ArgumentParser(
                 prog = 'rsap.py',
-                description = 'RNA-seq analysis pipeline takes quantitated RNA-seq data (both raw counts and normalised) and performs QC, DE-seq2, GO-terms analysis',
+                description = '''\
+                    RNA-seq analysis pipeline takes quantitated RNA-seq data (both raw counts and normalised) and performs QC, DE-seq2, GO-terms analysis.
+                
+                    Note: a container has been made available to run with this script: https://hub.docker.com/repository/docker/swingett/rsap_deseq2/general
+                    ''',
                 epilog = 'Steven Wingett 2024, The MRC-LMB, Cambridge, UK'
     )
 
