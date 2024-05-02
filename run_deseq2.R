@@ -135,7 +135,8 @@ resLFC
 # # # # # # # # # # # # # # # # # #
 # Generate output files
 # Check res and resLFC correspond
-to_check_res <- data.frame(res[, c(-2, -3)])
+#to_check_res <- data.frame(res[, c(-2, -3)])    # For normal
+to_check_res <- data.frame(res[, c(-2, -3, -4)])     # For apeglm, as 'stat' column not returned
 to_check_LFC <- data.frame(resLFC[, c(-2, -3)])
 to_check_res[is.na(to_check_res)] <- 'replaced'
 to_check_LFC[is.na(to_check_LFC)] <- 'replaced'
