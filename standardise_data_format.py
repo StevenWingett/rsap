@@ -4,6 +4,8 @@ import pandas as pd
 import argparse
 import os
 import numpy as np
+import qnorm
+
 
 ANSI_ESC= {'END':'\033[0m', 'RED':'\033[31m'}
 
@@ -90,5 +92,11 @@ expression_data.iloc[:, 2:] = np.log2(expression_data.iloc[:, 2:] + 1)
 outfile = f'{outdir}/log2_normalised_expression_data__plus_1_pipeline_format.tsv.gz'
 expression_data.to_csv(outfile, sep='\t', index=False)
 
+# Make a quantile-normalised matrix
+quantile_normalised_expression_data = expression_data.iloc[:, 2:].copy()
+quantile_normalised_expression_data = qnorm.quantile_normalize(quantile_normalised_expression_data, axis=1)
+quantile_normalised_expression_data = pd.concat([expression_data.iloc[:, :3], quantile_normalised_expression_data], axis=1)
+outfile = f'{outdir}/quantile_normalised_log2_normalised_expression_data__plus_1_pipeline_format.tsv.gz'
+expression_data.to_csv(outfile, sep='\t', index=False)
 
 print('Done')
