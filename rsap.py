@@ -65,11 +65,13 @@ def main():
     # Standardise data format
     print(_color('******CONVERT DATA TO PIPELINE FORMAT******'))
     command = f'python3 {rsap_folder}/standardise_data_format.py --raw_ex {options.raw_ex} --norm_ex {options.norm_ex} --outdir {options.outdir}'
+    print(f'Running command:\n{command}')
     os.system(command)
 
 
     # Perform QC
     print(_color('******PERFORM QC******'))
+    print(f'Running command:\n{command}')
     expression_file = f'{options.outdir}/expression_data_pipeline_format/normalised_expression_data_pipeline_format.tsv.gz' 
     command = f'python3 {rsap_folder}/qc.py --expression_file {expression_file} --design_file {options.design_file} --outdir {options.outdir}'
     os.system(command)
@@ -78,6 +80,7 @@ def main():
     # Make DESeq2 Metadata files
     print(_color('******MAKE DESEQ2 METADATA FILES******'))
     command = f'python3 {rsap_folder}/create_metadata.py --design_file {options.design_file} --outdir {options.outdir}'
+    print(f'Running command:\n{command}')
     os.system(command)
 
 
@@ -101,6 +104,7 @@ def main():
         expression_file = f'{options.outdir}/expression_data_pipeline_format/normalised_expression_data_pipeline_format.tsv.gz' 
 
         command = f'Rscript {rsap_folder}/run_deseq2.R {expression_file} {metadata_file} {outdir}'
+        print(f'Running command:\n{command}')
         os.system(command)
 
 
@@ -120,7 +124,7 @@ def main():
         groups = metadata.iloc[:, 1].drop_duplicates().to_list()
         outdir = outdir + '__' + groups[0] + '_vs_' + groups[1]
 
-        deseq_file = glob.glob(f'{outdir}/*/*.tsv')
+        deseq_file = glob.glob(f'{outdir}/*/*.deseq2_results.tsv')
 
         if len(deseq_file) == 1:
             deseq_file = deseq_file[0]
@@ -137,6 +141,7 @@ def main():
         print(f'Writing DESeq2 summary results to {outdir}')
 
         command = f'python3 {rsap_folder}/summarising_deseq_results.py --metadata_file {metadata_file} --deseq_file {deseq_file} --log2_norm_ex_file {expression_file} --outdir {outdir}'
+        print(f'Running command:\n{command}')
         os.system(command)
 
 

@@ -209,6 +209,13 @@ vsd <- vst(dds, blind=FALSE)
 head(assay(vsd), 3)
 rld <- rlog(dds, blind=FALSE)
 
+
+outfile <- paste0(outdir, '/', comparison, '.vst_normalised_data.tsv')
+write.table(assay(vsd), file=outfile, sep="\t", quote=FALSE)
+
+outfile <- paste0(outdir, '/', comparison, '.rlog_normalised_data.tsv')
+write.table(assay(rld), file=outfile, sep="\t", quote=FALSE)
+
 outfile <- paste0(outdir, '/', comparison, '.meanSdPlot_ntd.svg')
 print(paste('Creating meanSdPlot plot', outfile))
 svg(outfile)
