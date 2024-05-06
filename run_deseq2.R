@@ -61,9 +61,11 @@ if(ncol(cts) == nrow(coldata)){
 # Filter out genes with low numbers of reads
 print('Filtering out genes with a low number of reads')
 print(paste(dim(cts)[1], 'genes BEFORE filtering'))
-filt = rowSums(cts >= 10) >= 1   # 10 reads considered ok cutoff - see DEseq2 manal
+filt = rowSums(cts >= 10) >= 1   # 10 reads considered ok cutoff - see DEseq2 manual
 cts <- cts[filt, ]
 print(paste(dim(cts)[1], 'genes AFTER filtering'))
+
+
 
 # Re-order the metadata so it matches the samples
 coldata$dummy_row = rownames(coldata)   # Use a dummy row to prevent rownames disappearing when we have 1 column
@@ -129,6 +131,7 @@ res
 
 #library("apeglm")
 resLFC <- lfcShrink(dds, coef=comparison, type="apeglm")   # Shrunk l2fc
+#resLFC <- lfcShrink(dds, coef=comparison, type="normal")
 resLFC
 
 
@@ -165,6 +168,17 @@ outdir <- paste(outdir_base, comparison, sep="/")
 if(!dir.exists(outdir)) {
   dir.create(outdir)
 }
+
+
+# Write out to a file all the genes that were evaluated by DESeq2 (i.e. after filtering for low read counts)
+
+outfile <- paste0(outdir, '/', comparison, '.background_list.tsv')
+write.table(rownames(cts), 
+            file=outfile, 
+            row.names=FALSE,
+            quote = FALSE,
+            sep="\t")
+
 
 outfile <- paste0(outdir, '/', comparison, '.MA_plot_l2fc.png')
 print(paste('Creating MA plot', outfile))
