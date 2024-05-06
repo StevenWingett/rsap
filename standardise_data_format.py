@@ -93,6 +93,19 @@ outfile = f'{outdir}/log2_normalised_expression_data__plus_1_pipeline_format.tsv
 print(f'Writing to {outfile}')
 expression_data.to_csv(outfile, sep='\t', index=False)
 
+# Create a gene name / gene id lookup table
+lookup_table_data = (expression_data
+                     .loc[:, ['gene_id', 'gene_name']]
+                     .copy()
+                     .drop_duplicates()
+)
+
+print(f'{lookup_table_data.shape[0]} unique gene_id : gene_name entries in lookup table')
+outfile = f'{outdir}/gene_id_gene_name_lookup_table.tsv.gz'
+print(f'Writing to {outfile}')
+lookup_table_data.to_csv(outfile, sep='\t', index=False)
+
+
 # Make a quantile-normalised matrix
 quantile_normalised_expression_data = expression_data.iloc[:, 2:].copy()
 quantile_normalised_expression_data = qnorm.quantile_normalize(quantile_normalised_expression_data, axis=1)
