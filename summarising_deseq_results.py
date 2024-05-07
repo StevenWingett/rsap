@@ -143,26 +143,29 @@ cluster_heatmap_data = log2_normalised_expression_data.query('DEG != "NO"')
 cluster_heatmap_data = cluster_heatmap_data.drop(['gene_id', 'DEG'], axis=1)
 cluster_heatmap_data = cluster_heatmap_data.set_index('gene_name')
 
+try:    # clustermap will fail if not many DE genes
+    cg = sns.clustermap(data=cluster_heatmap_data.iloc[:, 1:], 
+                        z_score=0,
+                        col_cluster=False,
+                        xticklabels=True, 
+                        yticklabels=True,
+                        figsize=(10, 20),
+                        #cbar_pos=(0.01, 0.95, 0.01, 0.01)
+                    )
 
-cg = sns.clustermap(data=cluster_heatmap_data.iloc[:, 1:], 
-                    z_score=0,
-                    col_cluster=False,
-                    xticklabels=True, 
-                    yticklabels=True,
-                    figsize=(10, 20),
-                    #cbar_pos=(0.01, 0.95, 0.01, 0.01)
-                   )
+    plt.xticks(fontsize=30, rotation=0)
+    cg.ax_row_dendrogram.set_visible(False)
+    cg.ax_heatmap.set_xticklabels(cg.ax_heatmap.get_xmajorticklabels(), fontsize = 3)
+    cg.ax_heatmap.set_yticklabels(cg.ax_heatmap.get_ymajorticklabels(), fontsize = 1)
 
-plt.xticks(fontsize=30, rotation=0)
-cg.ax_row_dendrogram.set_visible(False)
-cg.ax_heatmap.set_xticklabels(cg.ax_heatmap.get_xmajorticklabels(), fontsize = 3)
-cg.ax_heatmap.set_yticklabels(cg.ax_heatmap.get_ymajorticklabels(), fontsize = 1)
+    outfile = f'{options.outdir}/{comparison}.deg_cluster_heatmap'
+    for image_format in image_formats:
+        plt.savefig(fname=f'{outfile}.{image_format}', bbox_inches='tight', pad_inches=0.5)
+    plt.clf()
+    #plt.show()
+except:
+    print(f'Unable to create clustermap for {comparison} - perhaps there is limited data returned?')
 
-outfile = f'{options.outdir}/{comparison}.deg_cluster_heatmap'
-for image_format in image_formats:
-    plt.savefig(fname=f'{outfile}.{image_format}', bbox_inches='tight', pad_inches=0.5)
-plt.clf()
-#plt.show()
 
 
 # Prepare scatter plot data
@@ -182,7 +185,7 @@ scatterplot_data.columns = column_names
 scatterplot_data = scatterplot_data.drop('Pipeline_Name', axis=1)
 
 
-# Calulate the mean expression for gene for each group
+# Calculate the mean expression for gene for each group
 scatterplot_data_grouped = scatterplot_data.groupby(by=['gene_id', 'sample_group', 'DEG'])
 scatterplot_data = scatterplot_data_grouped.mean().reset_index()
 
