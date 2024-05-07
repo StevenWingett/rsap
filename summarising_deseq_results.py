@@ -143,8 +143,9 @@ cluster_heatmap_data = log2_normalised_expression_data.query('DEG != "NO"')
 cluster_heatmap_data = cluster_heatmap_data.drop(['gene_id', 'DEG'], axis=1)
 cluster_heatmap_data = cluster_heatmap_data.set_index('gene_name')
 
+
 try:    # clustermap will fail if not many DE genes
-    cg = sns.clustermap(data=cluster_heatmap_data.iloc[:, 1:], 
+    cg = sns.clustermap(data=cluster_heatmap_data, 
                         z_score=0,
                         col_cluster=False,
                         xticklabels=True, 
