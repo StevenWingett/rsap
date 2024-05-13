@@ -66,6 +66,14 @@ cts <- cts[filt, ]
 print(paste(dim(cts)[1], 'genes AFTER filtering'))
 
 
+# Set up experimental design
+reference_levels <- unique(coldata[, 1]) 
+baseline_reference <- reference_levels[1]    # Reference appears first in metadata
+reference_levels <- unique(reference_levels)
+coldata[, 1] <- factor(coldata[, 1], levels=reference_levels)
+colnames(coldata)[1] <- "Comparison"
+print(colnames(coldata))
+
 
 # Re-order the metadata so it matches the samples
 coldata$dummy_row = rownames(coldata)   # Use a dummy row to prevent rownames disappearing when we have 1 column
@@ -80,13 +88,7 @@ if(any(checking)){
   print("Data/metadata match correctly")
 }
 
-# Set up experimental design
-reference_levels <- unique(coldata[, 1]) 
-baseline_reference <- reference_levels[1]    # Reference appears first in metadata
-reference_levels <- unique(reference_levels)
-coldata[, 1] <- factor(coldata[, 1], levels=reference_levels)
-colnames(coldata)[1] <- "Comparison"
-print(colnames(coldata))
+
 
 # Create output directory
 if(!dir.exists(outdir_base)) {
