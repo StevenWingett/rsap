@@ -68,12 +68,17 @@ def main():
     print(f'Running command:\n{command}')
     os.system(command)
 
+    # Output files produced, (to be used in this pipeline):
+    raw_expression_file = f'{options.outdir}/expression_data_pipeline_format/raw_expression_data_pipeline_format.tsv.gz'
+    normalised_expression_file = f'{options.outdir}/expression_data_pipeline_format/normalised_expression_data_pipeline_format.tsv.gz'
+    log2_normalised_expression_file = f'{options.outdir}/expression_data_pipeline_format/log2_normalised_expression_data__plus_1_pipeline_format.tsv.gz' 
+
 
     # Perform QC
     print(_color('******PERFORM QC******'))
     print(f'Running command:\n{command}')
-    expression_file = f'{options.outdir}/expression_data_pipeline_format/normalised_expression_data_pipeline_format.tsv.gz' 
-    command = f'python3 {rsap_folder}/qc.py --expression_file {expression_file} --design_file {options.design_file} --outdir {options.outdir}'
+ 
+    command = f'python3 {rsap_folder}/qc.py --expression_file {normalised_expression_file} --design_file {options.design_file} --outdir {options.outdir}'
     os.system(command)
 
 
@@ -101,16 +106,14 @@ def main():
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        expression_file = f'{options.outdir}/expression_data_pipeline_format/normalised_expression_data_pipeline_format.tsv.gz' 
-
-        command = f'Rscript {rsap_folder}/run_deseq2.R {expression_file} {metadata_file} {outdir}'
+        command = f'Rscript {rsap_folder}/run_deseq2.R {raw_expression_file} {metadata_file} {outdir} > {outdir}/deseq.log'
         print(f'Running command:\n{command}')
         os.system(command)
 
 
     # Summarise DEseq results
     print(_color('******SUMMARISE DESEQ2 RESULTS******'))
-    expression_file = f'{options.outdir}/expression_data_pipeline_format/log2_normalised_expression_data__plus_1_pipeline_format.tsv.gz' 
+
     
      # Use the metadata to detmine the location of the DESeq2 output
     for metadata_file in metadata_files:
@@ -140,7 +143,7 @@ def main():
 
         print(f'Writing DESeq2 summary results to {outdir}')
 
-        command = f'python3 {rsap_folder}/summarising_deseq_results.py --metadata_file {metadata_file} --deseq_file {deseq_file} --log2_norm_ex_file {expression_file} --outdir {outdir}'
+        command = f'python3 {rsap_folder}/summarising_deseq_results.py --metadata_file {metadata_file} --deseq_file {deseq_file} --log2_norm_ex_file {log2_normalised_expression_file} --outdir {outdir}'
         print(f'Running command:\n{command}')
         os.system(command)
 
