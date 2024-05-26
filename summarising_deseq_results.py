@@ -108,23 +108,23 @@ down_regulated_genes.to_csv(outfile, sep='\t', index=False)
 
 
 # Volcano plot
-deseq_data['minus_log10(padj)'] = -np.log10(deseq_data['padj'])
+#deseq_data['minus_log10(padj)'] = -np.log10(deseq_data['padj'])
 
-sns.scatterplot(data=deseq_data, 
-                x="log2FoldChange", 
-                y="minus_log10(padj)", 
-                s=2
-               )
+#sns.scatterplot(data=deseq_data, 
+#                x="log2FoldChange", 
+#                y="minus_log10(padj)", 
+#                s=2
+#               )
 
-plt.title(comparison)
-plt.axhline(y = -np.log10(options.padj_threshold), color = 'r', linestyle = '--', lw=0.5) 
-plt.axvline(x = options.abs_l2fc_threshold, color = 'r', linestyle = '--', lw=0.5) 
-plt.axvline(x = -options.abs_l2fc_threshold, color = 'r', linestyle = '--', lw=0.5) 
+#plt.title(comparison)
+#plt.axhline(y = -np.log10(options.padj_threshold), color = 'r', linestyle = '--', lw=0.5) 
+#plt.axvline(x = options.abs_l2fc_threshold, color = 'r', linestyle = '--', lw=0.5) 
+#plt.axvline(x = -options.abs_l2fc_threshold, color = 'r', linestyle = '--', lw=0.5) 
 
-outfile = f'{options.outdir}/{comparison}.volcano_plot'
-for image_format in image_formats:
-    plt.savefig(fname=f'{outfile}.{image_format}', bbox_inches='tight', pad_inches=0.5)
-plt.clf()
+#outfile = f'{options.outdir}/{comparison}.volcano_plot'
+#for image_format in image_formats:
+#    plt.savefig(fname=f'{outfile}.{image_format}', bbox_inches='tight', pad_inches=0.5)
+#plt.clf()
 #plt.show()
 
 
@@ -136,6 +136,85 @@ log2_normalised_expression_data.loc[filt, 'DEG'] = 'DOWN'
 
 filt = log2_normalised_expression_data['gene_id'].isin(up_regulated_genes)
 log2_normalised_expression_data.loc[filt, 'DEG'] = 'UP'
+
+
+# Volcano Plots
+volcano_data = deseq_data.copy()
+volcano_data['minus_log10(padj)'] = -np.log10(volcano_data['padj'])
+volcano_data = volcano_data.loc[:, ['region', 'log2FoldChange', 'minus_log10(padj)']]
+
+
+# Remove entries containing NA
+print(f'{volcano_data.shape[0]} genes BEFORE filter for NA')
+filt = ~ volcano_data.isna().any(axis=1)
+volcano_data = volcano_data[filt]
+print(f'{volcano_data.shape[0]} genes AFTER filtering for NA')
+
+volcano_data['Significant'] = 'NO'
+
+filt = volcano_data['region'].isin(down_regulated_genes)
+volcano_data.loc[filt, 'Significant'] = 'DOWN'
+
+filt = volcano_data['region'].isin(up_regulated_genes)
+volcano_data.loc[filt, 'Significant'] = 'UP'
+
+log2FoldChange_off_scale = 10
+minus_log10_padj_off_scale = 10
+
+volcano_data['Off_scale'] = False
+
+filt = volcano_data['log2FoldChange'] > log2FoldChange_off_scale
+volcano_data.loc[filt, 'log2FoldChange'] = log2FoldChange_off_scale
+volcano_data.loc[filt, 'Off_scale'] = True
+
+filt = volcano_data['log2FoldChange'] < -log2FoldChange_off_scale
+volcano_data.loc[filt, 'log2FoldChange'] = -log2FoldChange_off_scale
+volcano_data.loc[filt, 'Off_scale'] = True
+
+filt = volcano_data['minus_log10(padj)'] > minus_log10_padj_off_scale
+volcano_data.loc[filt, 'minus_log10(padj)'] = minus_log10_padj_off_scale
+volcano_data.loc[filt, 'Off_scale'] = True
+
+filt = volcano_data['minus_log10(padj)'] < -minus_log10_padj_off_scale
+volcano_data.loc[filt, 'minus_log10(padj)'] = -minus_log10_padj_off_scale
+volcano_data.loc[filt, 'Off_scale'] = True
+
+volcano_data = volcano_data.reset_index(drop=True) #The needs doing
+
+# Make volcano plot with no annotations
+if volcano_data['Off_scale'].sum() > 0:   # Prevents error
+    markers = ['o', '*']
+else:
+    markers = ['o']
+
+colors = ["grey", "red", 'blue']
+sns.set_palette(sns.color_palette(colors))
+
+sns.scatterplot(data=volcano_data, 
+                x="log2FoldChange", 
+                y="minus_log10(padj)", 
+                hue="Significant",
+                hue_order=['NO', 'UP', 'DOWN'],
+                style="Off_scale",
+                markers=markers,
+                s=7,
+                edgecolor = None
+               )
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
+
+outfile = f'{options.outdir}/{comparison}.volcano_plot'
+#outfile = f'{options.outdir}/{os.path.basename(deseq_data_file)}.padj{padj_threshold}_abs_l2fc_{abs_l2fc_threshold}_volcano_plot'
+for image_format in image_formats:
+    plt.savefig(fname=f'{outfile}.{image_format}', bbox_inches='tight', pad_inches=0.5)
+plt.clf()
+
+
+
+
+
+
+
+
 
 
 # Cluster heatmap of de genes
