@@ -8,6 +8,8 @@ import pandas as pd
 
 
 # Setup
+RSAP_VERSION = '0.0.1'
+
 ANSI_ESC= {'END':'\033[0m', 'BOLD':'\033[1m',
            'ITALIC':'\033[2m', 'UNDERLINE':'\033[3m',
            'BLACK':'\033[30m', 'RED':'\033[31m',
@@ -50,8 +52,8 @@ def read_options():
     parser.add_argument("--abs_l2fc_threshold", action="store", type=float, metavar='', default=0.584, 
                         help="Minimum DESeq2 absolute log2-fold change threshold"
                         )
-
-
+    
+    parser.add_argument("--version", action='store_true', help="Print RSAP version and quit")
 
 
     args = parser.parse_known_args()    #Use parse_known_arg to differentiate between arguments pre-specified and those that are not
@@ -62,6 +64,10 @@ def read_options():
 
 #Read in data 
 options = read_options()
+
+if options.version == True:
+    print(f'RSAP v{RSAP_VERSION}')
+    exit(0)
 
 
 def main():
