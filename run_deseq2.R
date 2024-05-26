@@ -227,10 +227,31 @@ rld <- rlog(dds, blind=FALSE)
 
 
 outfile <- paste0(outdir, '/', comparison, '.vst_normalised_data.tsv')
-write.table(assay(vsd), file=outfile, sep="\t", quote=FALSE)
+vsd_for_file <- as.data.frame(assay(vsd))   # Prevent R shifting column names on output
+gene_id <- rownames(vsd_for_file)
+vsd_for_file <- cbind(gene_id, vsd_for_file)
+
+write.table(vsd_for_file, 
+            file=outfile, 
+            sep="\t", 
+            quote=FALSE, 
+            col.names = TRUE,
+            row.names = FALSE)
+rm(vsd_for_file)
 
 outfile <- paste0(outdir, '/', comparison, '.rlog_normalised_data.tsv')
-write.table(assay(rld), file=outfile, sep="\t", quote=FALSE)
+rld_for_file <- as.data.frame(assay(rld))   # Prevent R shifting column names on output
+gene_id <- rownames(rld_for_file)
+rld_for_file <- cbind(gene_id, rld_for_file)
+
+write.table(rld_for_file, 
+            file=outfile, 
+            sep="\t", 
+            quote=FALSE, 
+            col.names = TRUE,
+            row.names = FALSE)
+            
+rm(rld_for_file)
 
 outfile <- paste0(outdir, '/', comparison, '.meanSdPlot_ntd.svg')
 print(paste('Creating meanSdPlot plot', outfile))
