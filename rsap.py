@@ -44,6 +44,15 @@ def read_options():
                         help="Path to the normalised expression matrix")  
     parser.add_argument("--design_file", action="store", type=str, metavar='', help="CSV experiment design file", default='analysis_design_file.csv')
     parser.add_argument("--outdir", action="store", type=str, metavar='', help="Output directory", default='results_rsap')
+    parser.add_argument("--padj_threshold", action="store", type=float, metavar='', default=0.05, 
+                        help="DESeq2 maxmium adjusted p-value threshold"
+                        )
+    parser.add_argument("--abs_l2fc_threshold", action="store", type=float, metavar='', default=0.584, 
+                        help="Minimum DESeq2 absolute log2-fold change threshold"
+                        )
+
+
+
 
     args = parser.parse_known_args()    #Use parse_known_arg to differentiate between arguments pre-specified and those that are not
     options = args[0]   # Get the 2 arrays of known/unknown arguments from the tuple
@@ -143,7 +152,7 @@ def main():
 
         print(f'Writing DESeq2 summary results to {outdir}')
 
-        command = f'python3 {rsap_folder}/summarising_deseq_results.py --metadata_file {metadata_file} --deseq_file {deseq_file} --log2_norm_ex_file {log2_normalised_expression_file} --outdir {outdir}'
+        command = f'python3 {rsap_folder}/summarising_deseq_results.py --metadata_file {metadata_file} --deseq_file {deseq_file} --log2_norm_ex_file {log2_normalised_expression_file} --padj_threshold {options.padj_threshold} --abs_l2fc_threshold {options.abs_l2fc_threshold} --outdir {outdir}'
         print(f'Running command:\n{command}')
         os.system(command)
 
