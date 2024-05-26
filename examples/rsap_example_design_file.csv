@@ -1,0 +1,15 @@
+Sample,Pipeline_Name,Group,,COMPETENCE1/Not_competent,Sex,,COMPETENCE2/Not_competent,,COMPETENCE3/Not_competent,Sex
+burb_1_merge1,burb_1_merge1,burb,,,,,,,,
+burb_1_merge2,burb_1_merge2,burb,,,,,,,,
+cuhk_2_merge1,cuhk_2_merge1,cuhk,,,,,,,,
+deyz_2_merge1,deyz_2_merge1,deyz,,,,,,,,
+deyz_2_merge2,deyz_2_merge2,deyz,,,,,,,,
+eesb_1_merge1,eesb_1_merge1,eesb,,,,,Competent,,Competent,Female
+eesb_1_merge2,eesb_1_merge2,eesb,,,,,Competent,,Competent,Female
+fawm_2_merge1,fawm_2_merge1,fawm,,,,,,,,
+feec_2_merge1,feec_2_merge1,feec,,,,,,,,
+fiaj_1_merge1,fiaj_1_merge1,fiaj,,Not_competent,Male,,Not_competent,,Not_competent,Male
+fiaj_1_merge2,fiaj_1_merge2,fiaj,,Not_competent,Male,,Not_competent,,Not_competent,Male
+hehd_1_merge1,hehd_1_merge1,hehd,,Competent,Female,,Competent,,Competent,Female
+kolf_2_merge1,kolf_2_merge1,kolf,,Competent,Male,,,,Competent,Male
+sojd_3_merge1,sojd_3_merge1,sojd,,Not_competent,Female,,Not_competent,,Not_competent,Female
