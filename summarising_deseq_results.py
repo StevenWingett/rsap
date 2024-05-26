@@ -195,22 +195,46 @@ scatterplot_data = scatterplot_data.pivot(index=['gene_id', 'DEG'], columns='sam
 scatterplot_data = scatterplot_data.reset_index()
 
 
-# Plot scatterplot
+# Plot scatterplot - plot mulitple plots so DEGs are not covered by grey spots
+sns.set_theme(style="whitegrid")
 colors = ["grey", "blue", 'red']
+point_size=5
 sns.set_palette(sns.color_palette(colors))
 plt.figure(figsize=(10 ,10))
 
-sns.scatterplot(data=scatterplot_data, 
+
+sns.scatterplot(data=scatterplot_data[scatterplot_data['DEG'] == 'NO'], 
                 x=sample_types[0], 
                 y=sample_types[1], 
-                hue='DEG', 
-                s=4,
-                #alpha=1,
-                edgecolor=None
+                legend=False,
+                linewidth=0,
+                s=point_size,
+                alpha=1,
+                color = 'grey'
+               )
+
+sns.scatterplot(data=scatterplot_data[scatterplot_data['DEG'] == 'UP'], 
+                x=sample_types[0], 
+                y=sample_types[1], 
+                legend=False,
+                linewidth=0,
+                s=point_size,
+                alpha=1,
+                color = 'red'
+               )
+
+sns.scatterplot(data=scatterplot_data[scatterplot_data['DEG'] == 'DOWN'], 
+                x=sample_types[0], 
+                y=sample_types[1], 
+                legend=False,
+                linewidth=0,
+                s=point_size,
+                alpha=1,
+                color = 'blue'
                )
 
 plt.title(comparison)
-plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
+#plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
 
 outfile = f'{options.outdir}/{comparison}.scatterplot'
 for image_format in image_formats:
