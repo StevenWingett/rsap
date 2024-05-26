@@ -98,35 +98,6 @@ up_regulated_genes = deseq_data.query('padj <= @options.padj_threshold')
 down_regulated_genes = up_regulated_genes.query('log2FoldChange <= -@options.abs_l2fc_threshold').loc[:, 'region'] 
 up_regulated_genes = up_regulated_genes.query('log2FoldChange >= @options.abs_l2fc_threshold').loc[:, 'region']
 
-outfile = f'{options.outdir}/up_regulated_genes.tsv'
-print(f'Writing to {outfile}')
-up_regulated_genes.to_csv(outfile, sep='\t', index=False)
-
-outfile = f'{options.outdir}/down_regulated_genes.tsv'
-print(f'Writing to {outfile}')
-down_regulated_genes.to_csv(outfile, sep='\t', index=False)
-
-
-# Volcano plot
-#deseq_data['minus_log10(padj)'] = -np.log10(deseq_data['padj'])
-
-#sns.scatterplot(data=deseq_data, 
-#                x="log2FoldChange", 
-#                y="minus_log10(padj)", 
-#                s=2
-#               )
-
-#plt.title(comparison)
-#plt.axhline(y = -np.log10(options.padj_threshold), color = 'r', linestyle = '--', lw=0.5) 
-#plt.axvline(x = options.abs_l2fc_threshold, color = 'r', linestyle = '--', lw=0.5) 
-#plt.axvline(x = -options.abs_l2fc_threshold, color = 'r', linestyle = '--', lw=0.5) 
-
-#outfile = f'{options.outdir}/{comparison}.volcano_plot'
-#for image_format in image_formats:
-#    plt.savefig(fname=f'{outfile}.{image_format}', bbox_inches='tight', pad_inches=0.5)
-#plt.clf()
-#plt.show()
-
 
 # Identify differentially expressed genes in log2 data file
 log2_normalised_expression_data['DEG'] = 'NO'
@@ -224,7 +195,7 @@ volcano_data['volcano_weighting'] = volcano_data['volcano_weighting'].rank(ascen
 gene_lookups = log2_normalised_expression_data.loc[:, ['gene_id', 'gene_name']]
 volcano_data = volcano_data.rename(mapper={'region' : 'gene_id'}, axis=1)
 volcano_data = pd.merge(volcano_data, gene_lookups, on='gene_id', how='left')
-del(gene_lookups)
+
 
 number_annotations = 35
 
@@ -364,5 +335,20 @@ for image_format in image_formats:
 plt.clf()
 #plt.show()
 
+
+# Write out DE genes (with gene names)
+up_regulated_genes = up_regulated_genes.rename('gene_id')
+up_regulated_genes = pd.merge(up_regulated_genes, gene_lookups, on='gene_id', how='left')
+
+down_regulated_genes = down_regulated_genes.rename('gene_id')
+down_regulated_genes = pd.merge(down_regulated_genes, gene_lookups, on='gene_id', how='left')
+
+outfile = f'{options.outdir}/up_regulated_genes.tsv'
+print(f'Writing to {outfile}')
+up_regulated_genes.to_csv(outfile, sep='\t', index=False)
+
+outfile = f'{options.outdir}/down_regulated_genes.tsv'
+print(f'Writing to {outfile}')
+down_regulated_genes.to_csv(outfile, sep='\t', index=False)
 
 print('Done')
