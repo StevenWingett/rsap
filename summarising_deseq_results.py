@@ -210,10 +210,53 @@ plt.clf()
 
 
 
+# Produce volcano plots with annotations
+volcano_data['volcano_weighting'] = (abs(volcano_data['log2FoldChange'])**2) * volcano_data['minus_log10(padj)']
+
+filt = volcano_data['Significant'] == 'NO'   # Only allow singificant genes to be names
+volcano_data.loc[filt, 'volcano_weighting'] = 0
+
+volcano_data['volcano_weighting'] = volcano_data['volcano_weighting'].rank(ascending=False)
 
 
+# Extract the gene names
+#gene_lookup_file = None
+gene_lookups = log2_normalised_expression_data.loc[:, ['gene_id', 'gene_name']]
+volcano_data = volcano_data.rename(mapper={'region' : 'gene_id'}, axis=1)
+volcano_data = pd.merge(volcano_data, gene_lookups, on='gene_id', how='left')
+del(gene_lookups)
+
+number_annotations = 35
+
+sns.set_style("whitegrid")
+
+sns.scatterplot(data=volcano_data, 
+                x="log2FoldChange", 
+                y="minus_log10(padj)", 
+                hue="Significant",
+                hue_order=['NO', 'UP', 'DOWN'],
+                style="Off_scale",
+                markers=markers,
+                s=7,
+                edgecolor = None
+               )
+for i in range(volcano_data.shape[0]):
+    if volcano_data.loc[i, 'volcano_weighting'] <= number_annotations:
+        plt.text(x=volcano_data.loc[i, 'log2FoldChange'] + 0.1,
+                 y=volcano_data.loc[i, 'minus_log10(padj)'] + 0.1,
+                 s=volcano_data.loc[i, 'gene_name'], 
+                 fontsize=6
+                 #fontdict=dict(color='red',size=10),
+                 #bbox=dict(facecolor='yellow',alpha=0.5)
+                )
 
 
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
+
+outfile = f'{options.outdir}/{comparison}.volcano_plot_annotated'
+for image_format in image_formats:
+    plt.savefig(fname=f'{outfile}.{image_format}', bbox_inches='tight', pad_inches=0.5)
+plt.clf()
 
 
 
