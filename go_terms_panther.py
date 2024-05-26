@@ -94,7 +94,7 @@ with open(json_outfile, 'r') as f, open(tsv_outfile, 'w') as f_out:
     f_out.writelines(header + '\n')
 
     for record in data['results']['result']:
-        if record['fdr'] > fdr_threshold:
+        if record['fdr'] <= fdr_threshold:
 
             if 'id' in record['term'].keys():     # Unclassified entries will be missing an id
                 output_line = '\t'.join([

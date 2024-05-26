@@ -158,6 +158,33 @@ def main():
 
 
     # Perform GO Analysis
+    print(_color('******GO TERM ENRICHMENT ANALYSIS******'))
+  
+
+    # Use the metadata to detmine the location of the DESeq2 output
+    for metadata_file in metadata_files:
+        #print(metadata_file)
+        metadata = pd.read_csv(metadata_file, sep='\t')
+
+        outdir = f'{options.outdir}/deseq2/'
+        outdir = outdir + os.path.basename(metadata_file)[:-13]  # Get comparison id
+        outdir = outdir + '__' + ('_'.join(metadata.columns.to_list()[1:]))
+
+        groups = metadata.iloc[:, 1].drop_duplicates().to_list()
+        outdir = outdir + '__' + groups[0] + '_vs_' + groups[1]
+        outdir = outdir + '/comparison_summary'
+
+        for deg_file in ('down_regulated_genes.tsv', 'up_regulated_genes.tsv'):
+            deg_file = f'{outdir}/{deg_file}'   
+
+            if not os.path.exists(deg_file):
+                print(f'Could not find {deg_file}')
+                print('This should not happen!!!!')
+                exit(1)
+
+            command = f'python3 {rsap_folder}/go_terms_panther.py --gene_ids_file {deg_file} --outdir {outdir}/go_enrichment'
+            print(f'Running command:\n{command}')
+            os.system(command)
 
 
     print(_color('******PIPELINE COMPLETE******'))
