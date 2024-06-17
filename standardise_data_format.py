@@ -109,7 +109,7 @@ lookup_table_data.to_csv(outfile, sep='\t', index=False)
 # Make a quantile-normalised matrix
 quantile_normalised_expression_data = expression_data.iloc[:, 2:].copy()
 quantile_normalised_expression_data = qnorm.quantile_normalize(quantile_normalised_expression_data, axis=1)
-quantile_normalised_expression_data = pd.concat([expression_data.iloc[:, :3], quantile_normalised_expression_data], axis=1)
+quantile_normalised_expression_data = pd.concat([expression_data.iloc[:, :2], quantile_normalised_expression_data], axis=1)
 outfile = f'{outdir}/quantile_normalised_log2_normalised_expression_data__plus_1_pipeline_format.tsv.gz'
 print(f'Writing to {outfile}')
 quantile_normalised_expression_data.to_csv(outfile, sep='\t', index=False)
