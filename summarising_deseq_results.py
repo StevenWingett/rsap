@@ -51,7 +51,7 @@ options = read_options()
 #outdir = './deseq2_summarising'
 
 image_formats = ('png', 'svg', 'eps')
-
+plt.rcParams['svg.fonttype'] = 'none'   # Embed SVG text as text (not as image)
 
 # Import data
 print(f'Reading in expression file: {options.log2_norm_ex_file}')
