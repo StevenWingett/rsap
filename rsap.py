@@ -52,7 +52,8 @@ def read_options():
     parser.add_argument("--abs_l2fc_threshold", action="store", type=float, metavar='', default=0.584, 
                         help="Minimum DESeq2 absolute log2-fold change threshold"
                         )
-    
+    parser.add_argument("--format", action="store", type=str, metavar='', help="Input data format: nf_core [default], seqmonk", default='nf_core')
+
     parser.add_argument("--version", action='store_true', help="Print RSAP version and quit")
 
 
@@ -76,10 +77,16 @@ def main():
     # Get options
     options = read_options()
 
+    if options.format in (['nf_core', 'seqmonk']):
+        print(f'Input format set to {options.format}')
+    else:
+        print(f'Input format "{options.format}" not valid!\nQuiting')
+        exit(1)
+
 
     # Standardise data format
     print(_color('******CONVERT DATA TO PIPELINE FORMAT******'))
-    command = f'python3 {rsap_folder}/standardise_data_format.py --raw_ex {options.raw_ex} --norm_ex {options.norm_ex} --outdir {options.outdir}'
+    command = f'python3 {rsap_folder}/standardise_data_format.py --raw_ex {options.raw_ex} --norm_ex {options.norm_ex} --outdir {options.outdir} --format {options.format}'
     print(f'Running command:\n{command}')
     os.system(command)
 

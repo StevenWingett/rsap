@@ -28,6 +28,8 @@ def read_options():
     parser.add_argument("--norm_ex", action="store", type=str, metavar='', default='salmon.merged.gene_tpm.tsv',
                         help="Path to the normalised expression matrix")
     parser.add_argument("--outdir", action="store", type=str, metavar='', help="Output directory", default='expression_data_pipeline_format')
+    parser.add_argument("--format", action="store", type=str, metavar='', help="Input data format: nf_core [default], seqmonk", default='nf_core')
+
 
     args = parser.parse_known_args()    #Use parse_known_arg to differentiate between arguments pre-specified and those that are not
     options = args[0]   # Get the 2 arrays of known/unknown arguments from the tuple
@@ -36,12 +38,15 @@ def read_options():
 
 options = read_options()
 
-input_data_format = 'nf_core'
+if options.format in (['nf_core', 'seqmonk']):
+    print(f'Input format set to {options.format}')
+else:
+    print(f'Input format "{options.format}" not valid!\nQuiting')
+    exit(1)
+
 
 
 # Read in data
-print(f'Input format set to {input_data_format}')
-
 input_output_file_lookup = {options.raw_ex : 'raw_expression_data_pipeline_format.tsv.gz',
                             options.norm_ex : 'normalised_expression_data_pipeline_format.tsv.gz'
                             }
@@ -63,7 +68,14 @@ for input_file in (options.raw_ex, options.norm_ex):   # options.norm_ex is used
                         )
     
     # Standardise data format
-    #if input_data_format == 'nf_core':
+    if options.format == 'seqmonk':
+        columns_to_select = [0, 5] + list(range(12, expression_data.shape[1]))
+        expression_data = expression_data.iloc[:, columns_to_select ]
+        column_names = expression_data.columns.to_list()
+        column_names[0] = 'gene_id'
+        column_names[1] = 'gene_name'
+        expression_data.columns = column_names
+
 
     outfile = f'{outdir}/{input_output_file_lookup[input_file]}'
     print(f'Writing to {outfile}')
