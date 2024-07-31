@@ -63,19 +63,23 @@ if not os.path.exists(outdir):
 
 for input_file in (options.raw_ex, options.norm_ex):   # options.norm_ex is used later on to create log2 matrix
     print(f'Reading in data file {input_file}')
-    expression_data = pd.read_csv(f'{input_file}',         
-                            sep='\t'
-                        )
+
     
     # Standardise data format
     if options.format == 'seqmonk':
+        expression_data = pd.read_csv(f'{input_file}',         
+                            sep='\t', dtype = {'Chromosome': str}    # Import and make sure chromosome are imported as dtypes to avoid warnings
+                        )
         columns_to_select = [0, 5] + list(range(12, expression_data.shape[1]))
         expression_data = expression_data.iloc[:, columns_to_select ]
         column_names = expression_data.columns.to_list()
         column_names[0] = 'gene_id'
         column_names[1] = 'gene_name'
         expression_data.columns = column_names
-
+    else:
+        expression_data = pd.read_csv(f'{input_file}',         
+                            sep='\t'
+                        )
 
     outfile = f'{outdir}/{input_output_file_lookup[input_file]}'
     print(f'Writing to {outfile}')
