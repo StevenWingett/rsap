@@ -70,6 +70,7 @@ for input_file in (options.raw_ex, options.norm_ex):   # options.norm_ex is used
         expression_data = pd.read_csv(f'{input_file}',         
                             sep='\t', dtype = {'Chromosome': str}    # Import and make sure chromosome are imported as dtypes to avoid warnings
                         )
+        expression_data.iloc[:, 0] = expression_data.iloc[:, 1] + '..' + expression_data.iloc[:, 0]   # Add chromosome name
         columns_to_select = [0, 5] + list(range(12, expression_data.shape[1]))
         expression_data = expression_data.iloc[:, columns_to_select ]
         column_names = expression_data.columns.to_list()
