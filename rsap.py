@@ -52,7 +52,7 @@ def read_options():
     parser.add_argument("--abs_l2fc_threshold", action="store", type=float, metavar='', default=0.584, 
                         help="Minimum DESeq2 absolute log2-fold change threshold"
                         )
-    parser.add_argument("--format", action="store", type=str, metavar='', help="Input data format: nf_core [default], seqmonk", default='nf_core')
+    parser.add_argument("--format", action="store", type=str, help="Input data format: nf_core [default], seqmonk", default='nf_core')
     parser.add_argument("--skip_go", action='store_true', metavar='', help="Skip the Human GO terms Enrichment Analysis")
 
 
@@ -179,7 +179,7 @@ def main():
     else:
         print(_color('******GO TERM ENRICHMENT ANALYSIS******'))
     
-    
+
         # Use the metadata to detmine the location of the DESeq2 output
         for metadata_file in metadata_files:
             #print(metadata_file)
