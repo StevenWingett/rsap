@@ -53,7 +53,7 @@ def read_options():
                         help="Minimum DESeq2 absolute log2-fold change threshold"
                         )
     parser.add_argument("--format", action="store", type=str, help="Input data format: nf_core [default], seqmonk", default='nf_core')
-    parser.add_argument("--skip_go", action='store_true', metavar='', help="Skip the Human GO terms Enrichment Analysis")
+    parser.add_argument("--skip_go", action='store_true', help="Skip the Human GO terms Enrichment Analysis")
 
 
 
