@@ -8,7 +8,7 @@ import pandas as pd
 
 
 # Setup
-RSAP_VERSION = '0.0.1'
+RSAP_VERSION = '0.0.3.dev'
 
 ANSI_ESC= {'END':'\033[0m', 'BOLD':'\033[1m',
            'ITALIC':'\033[2m', 'UNDERLINE':'\033[3m',
@@ -41,9 +41,9 @@ def read_options():
     )
 
     parser.add_argument("--raw_ex", action="store", type=str, metavar='', default='salmon.merged.gene.tsv',
-                        help="Path to the normalised count expression matrix")
+                        help="Path to the raw count expression matrix")
     parser.add_argument("--norm_ex", action="store", type=str, metavar='', default='salmon.merged.gene_tpm.tsv',
-                        help="Path to the normalised expression matrix")  
+                        help="Path to the normalised expression matrix (NOT log-transformed)")  
     parser.add_argument("--design_file", action="store", type=str, metavar='', help="CSV experiment design file", default='analysis_design_file.csv')
     parser.add_argument("--outdir", action="store", type=str, metavar='', help="Output directory", default='results_rsap')
     parser.add_argument("--padj_threshold", action="store", type=float, metavar='', default=0.05, 
