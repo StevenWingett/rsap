@@ -26,7 +26,7 @@ def read_options():
     parser.add_argument("--raw_ex", action="store", type=str, metavar='', default='salmon.merged.gene_counts.tsv',
                         help="Path to the normalised expression matrix")
     parser.add_argument("--norm_ex", action="store", type=str, metavar='', default='salmon.merged.gene_tpm.tsv',
-                        help="Path to the normalised expression matrix")
+                        help="Path to the normalised expression matrix (NOT log-transformed)")
     parser.add_argument("--outdir", action="store", type=str, metavar='', help="Output directory", default='expression_data_pipeline_format')
     parser.add_argument("--format", action="store", type=str, metavar='', help="Input data format: nf_core [default], seqmonk", default='nf_core')
 
