@@ -24,7 +24,7 @@ def read_options():
                 epilog = 'Steven Wingett 2024, The MRC-LMB, Cambridge, UK'
     )
     parser.add_argument("--raw_ex", action="store", type=str, metavar='', default='salmon.merged.gene_counts.tsv',
-                        help="Path to the normalised expression matrix")
+                        help="Path to the raw expression matrix")
     parser.add_argument("--norm_ex", action="store", type=str, metavar='', default='salmon.merged.gene_tpm.tsv',
                         help="Path to the normalised expression matrix (NOT log-transformed)")
     parser.add_argument("--outdir", action="store", type=str, metavar='', help="Output directory", default='expression_data_pipeline_format')
