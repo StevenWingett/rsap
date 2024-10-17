@@ -24,11 +24,11 @@ def read_options():
                 epilog = 'Steven Wingett 2024, The MRC-LMB, Cambridge, UK'
     )
     parser.add_argument("--raw_ex", action="store", type=str, metavar='', default='salmon.merged.gene_counts.tsv',
-                        help="Path to the raw expression matrix")
+                        help="Path to the RAW count expression matrix")
     parser.add_argument("--norm_ex", action="store", type=str, metavar='', default='salmon.merged.gene_tpm.tsv',
                         help="Path to the normalised expression matrix (NOT log-transformed)")
     parser.add_argument("--outdir", action="store", type=str, metavar='', help="Output directory", default='expression_data_pipeline_format')
-    parser.add_argument("--format", action="store", type=str, metavar='', help="Input data format: nf_core [default], seqmonk", default='nf_core')
+    parser.add_argument("--format", action="store", type=str, metavar='', help="Input data format: nf_core [default], seqmonk_rnaseq, seqmonk", default='nf_core')
 
 
     args = parser.parse_known_args()    #Use parse_known_arg to differentiate between arguments pre-specified and those that are not
@@ -38,7 +38,7 @@ def read_options():
 
 options = read_options()
 
-if options.format in (['nf_core', 'seqmonk']):
+if options.format in (['nf_core', 'seqmonk_rnaseq', 'seqmonk']):
     print(f'Input format set to {options.format}')
 else:
     print(f'Input format "{options.format}" not valid!\nQuiting')
@@ -66,7 +66,27 @@ for input_file in (options.raw_ex, options.norm_ex):   # options.norm_ex is used
 
     
     # Standardise data format
-    if options.format == 'seqmonk':
+    if options.format == 'seqmonk_rnaseq':
+        expression_data = pd.read_csv(f'{input_file}',         
+                            sep='\t', dtype = {'Chromosome': str}    # Import and make sure chromosome are imported as dtypes to avoid warnings
+                        )
+
+        gene_names = expression_data.iloc[:, 0].copy()
+        expression_data.iloc[:, 0] = expression_data.iloc[:, 6] + '_' + expression_data.iloc[:, 0] + expression_data.iloc[:, 1] + expression_data.iloc[:, 2].astype(str) + expression_data.iloc[:, 3].astype(str)   # Co-ordinates needed to preven duplicates
+        expression_data.iloc[:, 1] = gene_names.copy()
+
+        columns_to_select = [0, 1] + list(range(12, expression_data.shape[1]))
+        expression_data = expression_data.iloc[:, columns_to_select ]
+
+        column_names = expression_data.columns.to_list()
+        column_names[0] = 'gene_id'
+        column_names[1] = 'gene_name'
+        expression_data.columns = column_names
+
+
+
+
+    elif options.format == 'seqmonk':
         expression_data = pd.read_csv(f'{input_file}',         
                             sep='\t', dtype = {'Chromosome': str}    # Import and make sure chromosome are imported as dtypes to avoid warnings
                         )
@@ -99,9 +119,12 @@ if len(raw_ex_gene_ids) != len(norm_ex_gene_ids):
 
 # Check raw/normalised gene ids match exactly
 filt = raw_ex_gene_ids != norm_ex_gene_ids
-filt = filt.any()
-if filt:
-    print(_color(f'Problem: genes ids raw data do not all match normalised data!'))
+#filt = filt.any()
+if filt.any():
+    print(_color(f'Problem: {filt.sum()} gene ids raw data do not match normalised data!'))
+    print(_color(f'Problem: {filt.sum()} gene ids raw data do not match normalised data!'))
+    print(_color(f'Problem: e.g. {raw_ex_gene_ids[filt]}'))
+    print(_color(f'Problem: e.g. {norm_ex_gene_ids[filt]}'))
     exit(1)
 
 # Make the log2-transformed normalised matrix

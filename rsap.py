@@ -41,7 +41,7 @@ def read_options():
     )
 
     parser.add_argument("--raw_ex", action="store", type=str, metavar='', default='salmon.merged.gene.tsv',
-                        help="Path to the raw count expression matrix")
+                        help="Path to the RAW count expression matrix")
     parser.add_argument("--norm_ex", action="store", type=str, metavar='', default='salmon.merged.gene_tpm.tsv',
                         help="Path to the normalised expression matrix (NOT log-transformed)")  
     parser.add_argument("--design_file", action="store", type=str, metavar='', help="CSV experiment design file", default='analysis_design_file.csv')
@@ -52,7 +52,7 @@ def read_options():
     parser.add_argument("--abs_l2fc_threshold", action="store", type=float, metavar='', default=0.584, 
                         help="Minimum DESeq2 absolute log2-fold change threshold"
                         )
-    parser.add_argument("--format", action="store", type=str, help="Input data format: nf_core [default], seqmonk", default='nf_core')
+    parser.add_argument("--format", action="store", type=str, metavar='', help="Input data format: nf_core [default], seqmonk_rnaseq, seqmonk", default='nf_core')
     parser.add_argument("--skip_go", action='store_true', help="Skip the Human GO terms Enrichment Analysis")
 
 
@@ -80,7 +80,7 @@ def main():
     # Get options
     options = read_options()
 
-    if options.format in (['nf_core', 'seqmonk']):
+    if options.format in (['nf_core', 'seqmonk_rnaseq', 'seqmonk']):
         print(f'Input format set to {options.format}')
     else:
         print(f'Input format "{options.format}" not valid!\nQuiting')
