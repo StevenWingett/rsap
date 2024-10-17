@@ -8,7 +8,7 @@ import pandas as pd
 
 
 # Setup
-RSAP_VERSION = '0.0.3.dev'
+RSAP_VERSION = '0.0.3'
 
 ANSI_ESC= {'END':'\033[0m', 'BOLD':'\033[1m',
            'ITALIC':'\033[2m', 'UNDERLINE':'\033[3m',
