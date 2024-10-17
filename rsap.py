@@ -41,7 +41,7 @@ def read_options():
     )
 
     parser.add_argument("--raw_ex", action="store", type=str, metavar='', default='salmon.merged.gene.tsv',
-                        help="Path to the raw count expression matrix")
+                        help="Path to the normalised count expression matrix")
     parser.add_argument("--norm_ex", action="store", type=str, metavar='', default='salmon.merged.gene_tpm.tsv',
                         help="Path to the normalised expression matrix")  
     parser.add_argument("--design_file", action="store", type=str, metavar='', help="CSV experiment design file", default='analysis_design_file.csv')
