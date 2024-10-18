@@ -72,7 +72,7 @@ for input_file in (options.raw_ex, options.norm_ex):   # options.norm_ex is used
                         )
 
         gene_names = expression_data.iloc[:, 0].copy()
-        expression_data.iloc[:, 0] = expression_data.iloc[:, 6] + '_' + expression_data.iloc[:, 0] + expression_data.iloc[:, 1] + expression_data.iloc[:, 2].astype(str) + expression_data.iloc[:, 3].astype(str)   # Co-ordinates needed to preven duplicates
+        expression_data.iloc[:, 0] = expression_data.iloc[:, 6] + '_' + expression_data.iloc[:, 0] + '_' + expression_data.iloc[:, 1] + '_' + expression_data.iloc[:, 2].astype(str) + '_' + expression_data.iloc[:, 3].astype(str)   # Co-ordinates needed to preven duplicates
         expression_data.iloc[:, 1] = gene_names.copy()
 
         columns_to_select = [0, 1] + list(range(12, expression_data.shape[1]))
